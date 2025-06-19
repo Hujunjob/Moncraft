@@ -25,7 +25,7 @@ export class RPGGameModel extends Model {
     // Create new player data
     const playerData = {
       id: viewId,
-      name: `Player ${viewId.slice(0, 8)}`,
+      name: `Player ${viewId.slice(0, 8)}`, // Default name, will be updated
       x: 400 + Math.random() * 200 - 100, // Random spawn near center
       y: 300 + Math.random() * 200 - 100,
       facing: 'down',

@@ -78,7 +78,13 @@ export class RPGGameView extends View {
         x: playerData.x,
         y: playerData.y,
         duration: 100,
-        ease: 'Power2'
+        ease: 'Power2',
+        onUpdate: () => {
+          // Update name position during movement
+          if (sprite.nameText) {
+            sprite.nameText.setPosition(sprite.x, sprite.y - 20)
+          }
+        }
       })
       
       // Update visual state
@@ -93,6 +99,11 @@ export class RPGGameView extends View {
     if (playerId !== this.localPlayerId && this.otherPlayers.has(playerId)) {
       const sprite = this.otherPlayers.get(playerId)
       this.updateOtherPlayerVisuals(sprite, playerData)
+      
+      // Update name text if it changed
+      if (sprite.nameText && playerData.name) {
+        sprite.nameText.setText(playerData.name)
+      }
     }
   }
 
@@ -112,11 +123,23 @@ export class RPGGameView extends View {
   createOtherPlayerSprite(playerData) {
     if (!this.gameScene) return
     
+    // Generate random color for each player (excluding black and very dark colors)
+    const generateRandomColor = () => {
+      const minBrightness = 0x40 // Minimum brightness to avoid too dark colors
+      const r = Math.floor(Math.random() * (0xFF - minBrightness)) + minBrightness
+      const g = Math.floor(Math.random() * (0xFF - minBrightness)) + minBrightness  
+      const b = Math.floor(Math.random() * (0xFF - minBrightness)) + minBrightness
+      return (r << 16) | (g << 8) | b
+    }
+    
     // Create sprite for other player
     const sprite = this.gameScene.physics.add.sprite(playerData.x, playerData.y, 'player')
     sprite.setDisplaySize(24, 24)
-    sprite.setTint(0xff0000) // Red color for other players
+    sprite.setTint(generateRandomColor()) // Random color for other players
     sprite.setDepth(99)
+    
+    // Store the base color for this player
+    sprite.baseColor = sprite.tintTopLeft
     
     // Add player name text
     const nameText = this.gameScene.add.text(0, -20, playerData.name, {
@@ -136,17 +159,21 @@ export class RPGGameView extends View {
   }
 
   updateOtherPlayerVisuals(sprite, playerData) {
-    // Update sprite tint based on facing direction
-    const facingColors = {
-      up: 0x0000ff,
-      down: 0xff0000,
-      left: 0xff8800,
-      right: 0x8800ff
+    // If player is moving, use slightly modified base color, otherwise use base color
+    if (playerData.isMoving && sprite.baseColor) {
+      // Create a slightly darker version of the base color when moving
+      const baseColor = sprite.baseColor
+      const r = Math.max(0, ((baseColor >> 16) & 0xFF) - 0x20)
+      const g = Math.max(0, ((baseColor >> 8) & 0xFF) - 0x20)
+      const b = Math.max(0, (baseColor & 0xFF) - 0x20)
+      const movingColor = (r << 16) | (g << 8) | b
+      sprite.setTint(movingColor)
+    } else if (sprite.baseColor) {
+      // Use base color when idle
+      sprite.setTint(sprite.baseColor)
     }
     
-    sprite.setTint(facingColors[playerData.facing] || 0xff0000)
-    
-    // Update name position
+    // Update name position to follow sprite exactly
     if (sprite.nameText) {
       sprite.nameText.setPosition(sprite.x, sprite.y - 20)
     }

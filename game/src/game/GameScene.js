@@ -70,6 +70,16 @@ export class GameScene extends Phaser.Scene {
     // Create player
     this.player = new Player(this, 400, 300)
     
+    // Add local player name text above player
+    this.localPlayerNameText = this.add.text(0, -20, this.playerName, {
+      fontSize: '12px',
+      fill: '#ffffff',
+      backgroundColor: '#000000',
+      padding: { left: 4, right: 4, top: 2, bottom: 2 }
+    })
+    this.localPlayerNameText.setOrigin(0.5)
+    this.localPlayerNameText.setDepth(100)
+    
     // Create camera follow with smooth following
     this.cameras.main.startFollow(this.player.sprite, true, 0.05, 0.05)
     this.cameras.main.setZoom(1.5) // Zoom in for better view
@@ -138,6 +148,9 @@ export class GameScene extends Phaser.Scene {
       this.croquetView = this.croquetSession.view
       this.croquetView.setGameScene(this)
       
+      // Send player name to the model
+      this.croquetView.publishPlayerUpdate({ name: this.playerName })
+      
       // Update connection status
       this.connectionText.setText('Connected')
       this.connectionText.setFill('#00ff00')
@@ -157,6 +170,11 @@ export class GameScene extends Phaser.Scene {
       const oldAnimState = this.player.animationState
       
       this.player.update(this.cursors, this.wasd)
+      
+      // Update local player name position to follow player
+      if (this.localPlayerNameText) {
+        this.localPlayerNameText.setPosition(this.player.sprite.x, this.player.sprite.y - 20)
+      }
       
       // Send updates to other players if position or state changed
       if (this.croquetView && 
