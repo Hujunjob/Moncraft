@@ -1,54 +1,133 @@
-# React + TypeScript + Vite
+# RPG Multiplayer Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A 2D RPG multiplayer game built with **React**, **Phaser**, **Vite**, and **Croquet** for real-time multiplayer functionality.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time Multiplayer** - Multiple players can join and play together using Croquet
+- **2D Tilemap World** - Large explorable world built with tilemaps
+- **Smooth Camera Following** - Camera follows player with smooth movement
+- **Player Movement** - WASD or Arrow key controls with visual feedback
+- **Modern Tech Stack** - Vite + React + Phaser + Croquet
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Vite** - Fast build tool and dev server
+- **React** - UI framework for game interface
+- **Phaser 3** - 2D game engine for rendering and physics
+- **Croquet** - Real-time multiplayer synchronization
+- **JavaScript ES6+** - Modern JavaScript features
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Game Architecture
+
+### Project Structure
+```
+src/
+├── components/        # React components
+│   └── GameContainer.jsx
+├── game/             # Phaser game logic
+│   ├── GameScene.js     # Main game scene
+│   ├── GameConfig.js    # Phaser configuration
+│   ├── Player.js        # Player character class
+│   ├── WorldMap.js      # Tilemap world management
+│   ├── CroquetModels.js # Croquet shared models
+│   └── CroquetView.js   # Croquet view logic
+├── assets/           # Game assets
+│   ├── images/
+│   ├── tilemaps/
+│   └── sounds/
+├── App.jsx           # Main React app
+└── main.jsx          # React entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Game Systems
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **World System** - Tilemap-based 2D world with camera following
+2. **Player System** - Character movement, animation states, and visual feedback
+3. **Multiplayer System** - Real-time synchronization of player positions and states
+4. **UI System** - React-based game interface with player info and connection status
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone or copy this project
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up Croquet API key (optional for local testing):
+   - Copy `.env.example` to `.env`
+   - Get a free API key from [https://croquet.io/keys](https://croquet.io/keys)
+   - Add your API key to `.env`:
+     ```
+     VITE_CROQUET_API_KEY=your_api_key_here
+     ```
+
+### Running the Game
+
+Start the development server:
+```bash
+npm run dev
 ```
+
+The game will be available at `http://localhost:3000`
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+## Game Controls
+
+- **WASD** or **Arrow Keys** - Move player character
+- **Mouse** - (Future: UI interactions)
+
+## Multiplayer
+
+The game uses Croquet for real-time multiplayer functionality:
+
+- Players automatically join the same session
+- Player positions and movements are synchronized in real-time
+- Each player has a unique color and name
+- Connection status is displayed in the game UI
+
+## Development Notes
+
+### Tilemap System
+- Uses Phaser's tilemap system with JSON format
+- 32x32 pixel tiles in a 40x30 grid (1280x960 world)
+- Easily expandable with Tiled map editor
+
+### Camera System
+- Smooth following with lerp interpolation
+- Configurable deadzone for natural movement
+- Bounded to world limits
+
+### Multiplayer Architecture
+- **Model** (CroquetModels.js) - Shared game state
+- **View** (CroquetView.js) - Player-specific rendering and input
+- **Scene** (GameScene.js) - Phaser game logic integration
+
+## Future Enhancements
+
+- [ ] Proper sprite animations
+- [ ] Chat system
+- [ ] NPCs and interactions
+- [ ] Inventory system
+- [ ] Quest system
+- [ ] Combat mechanics
+- [ ] Audio system
+- [ ] Better tilemap graphics
+- [ ] Mobile touch controls
+
+## License
+
+MIT License - feel free to use this as a foundation for your own RPG games!
